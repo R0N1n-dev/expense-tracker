@@ -2,6 +2,7 @@ import { computed, ref, watch } from 'vue'
 import { categoryById } from '../data/categories'
 import { dayKey } from '../lib/format'
 import { getJSON, setJSON } from '../lib/storage'
+import { refreshWidget } from '../lib/widget'
 
 const BUDGET_KEY = 'budget'
 const EXPENSES_KEY = 'expenses'
@@ -13,7 +14,7 @@ const items = ref([])
 function setBudget(n) {
   if (!(n > 0)) return
   budget.value = n
-  setJSON(BUDGET_KEY, n)
+  setJSON(BUDGET_KEY, n).then(refreshWidget)
 }
 
 // Call once before mounting the app.
@@ -23,7 +24,14 @@ export async function loadStore() {
   items.value = await getJSON(EXPENSES_KEY, [])
 }
 
-watch(items, (v) => setJSON(EXPENSES_KEY, v), { deep: true })
+watch(
+  items,
+  async (v) => {
+    await setJSON(EXPENSES_KEY, v)
+    refreshWidget()
+  },
+  { deep: true },
+)
 
 const today = new Date()
 const todayKey = dayKey(today)

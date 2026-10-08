@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import AppIcon from './components/AppIcon.vue'
 import BudgetHero from './components/BudgetHero.vue'
 import WeekChart from './components/WeekChart.vue'
@@ -9,6 +9,7 @@ import BudgetSheet from './components/BudgetSheet.vue'
 import { useExpenses } from './composables/useExpenses'
 import { useTheme } from './composables/useTheme'
 import { fmt } from './lib/format'
+import { consumeWidgetAction } from './lib/widget'
 
 const { month, budget, setBudget, groups, todayKey, add, update, remove } = useExpenses()
 const { dark, toggle } = useTheme()
@@ -57,6 +58,17 @@ function onSave(p) {
   sheetOpen.value = false
   flash(id)
 }
+
+// The widget's + button opens the app with the add sheet already showing.
+async function checkWidgetAction() {
+  if (document.visibilityState === 'hidden') return
+  if ((await consumeWidgetAction()) === 'add') openAdd()
+}
+
+onMounted(() => {
+  checkWidgetAction()
+  document.addEventListener('visibilitychange', checkWidgetAction)
+})
 
 function onDelete() {
   remove(editing.value.id)
