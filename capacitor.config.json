@@ -1,0 +1,13 @@
+{
+  "appId": "com.devn1n.expensetracker",
+  "appName": "Expense Tracker",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false,
+      "backgroundColor": "#F3F2FA",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false
+    }
+  }
+}
