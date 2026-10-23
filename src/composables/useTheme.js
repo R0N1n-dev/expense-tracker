@@ -1,26 +1,92 @@
-import { ref } from 'vue'
+import { Capacitor, SystemBars, SystemBarsStyle } from '@capacitor/core'
+import { computed, ref, watch } from 'vue'
+import { DEFAULT_MODE, DEFAULT_THEME, THEMES, themeById, themeTokens } from '../data/themes'
 import { getJSON, setJSON } from '../lib/storage'
 
-const THEME_KEY = 'theme'
-const dark = ref(matchMedia('(prefers-color-scheme: dark)').matches)
+const THEME_KEY = 'themeId'
+const MODE_KEY = 'themeMode'
+
+const media = matchMedia('(prefers-color-scheme: dark)')
+const systemDark = ref(media.matches)
+const themeId = ref(DEFAULT_THEME)
+const mode = ref(DEFAULT_MODE)
+
+const theme = computed(() => themeById(themeId.value))
+const dark = computed(() =>
+  mode.value === 'dark' ? true : mode.value === 'light' ? false : systemDark.value,
+)
+const tokens = computed(() => themeTokens(theme.value, dark.value))
+
+let meta = null
+let lastApplied = ''
+
+// The status bar has to follow the app theme, not the OS theme: in light mode
+// we ask for dark icons, in dark mode for light icons. Capacitor 8 bundles the
+// native SystemBars plugin, which also handles the navigation/gesture bar.
+async function syncSystemBars() {
+  if (!Capacitor.isNativePlatform()) return
+  try {
+    await SystemBars.setStyle({
+      style: dark.value ? SystemBarsStyle.Dark : SystemBarsStyle.Light,
+    })
+  } catch {
+    /* plugin missing on an old native build */
+  }
+}
 
 function apply() {
-  document.documentElement.setAttribute('data-theme', dark.value ? 'dark' : 'light')
+  const root = document.documentElement
+  root.setAttribute('data-theme', dark.value ? 'dark' : 'light')
+  root.setAttribute('data-theme-id', theme.value.id)
+  root.style.colorScheme = dark.value ? 'dark' : 'light'
+  for (const [name, value] of Object.entries(tokens.value)) {
+    root.style.setProperty(name, value)
+  }
+  if (!meta) meta = document.querySelector('meta[name="theme-color"]')
+  if (meta) meta.setAttribute('content', tokens.value['--bg'])
+
+  const signature = `${theme.value.id}:${dark.value}`
+  if (signature !== lastApplied) {
+    lastApplied = signature
+    syncSystemBars()
+  }
 }
-apply()
 
 // Call once before mounting the app.
 export async function loadTheme() {
-  const saved = await getJSON(THEME_KEY, null)
-  if (saved) dark.value = saved === 'dark'
+  const [savedTheme, savedMode] = await Promise.all([
+    getJSON(THEME_KEY, DEFAULT_THEME),
+    getJSON(MODE_KEY, DEFAULT_MODE),
+  ])
+  if (THEMES.some((t) => t.id === savedTheme)) themeId.value = savedTheme
+  if (['system', 'light', 'dark'].includes(savedMode)) mode.value = savedMode
   apply()
+
+  media.addEventListener('change', (event) => {
+    systemDark.value = event.matches
+    apply()
+  })
+  // Some Android skins reset the bar appearance when the WebView is paused.
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') syncSystemBars()
+  })
 }
 
+watch([themeId, mode], () => {
+  apply()
+  setJSON(THEME_KEY, themeId.value)
+  setJSON(MODE_KEY, mode.value)
+})
+
 export function useTheme() {
-  function toggle() {
-    dark.value = !dark.value
-    apply()
-    setJSON(THEME_KEY, dark.value ? 'dark' : 'light')
+  function setTheme(id) {
+    if (THEMES.some((t) => t.id === id)) themeId.value = id
   }
-  return { dark, toggle }
+  function setMode(next) {
+    if (['system', 'light', 'dark'].includes(next)) mode.value = next
+  }
+  function toggle() {
+    setMode(dark.value ? 'light' : 'dark')
+  }
+  return { themeId, theme, mode, dark, tokens, setTheme, setMode, toggle, themes: THEMES }
 }

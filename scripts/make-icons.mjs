@@ -15,7 +15,8 @@ const C = 2 * Math.PI * R
 const defs = `<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
   <stop offset="0" stop-color="#5B47E0"/><stop offset="1" stop-color="#241C73"/></linearGradient></defs>`
 
-// Segmented ring (the budget bar from the app, bent into a circle) plus a white coin in the middle.
+// Segmented ring (the budget bar from the app, bent into a circle) around an N
+// for Nsimbi. The N is drawn as a path so the icon renders without fonts.
 function mark() {
   let start = 0
   const arcs = LENGTHS.map((len, i) => {
@@ -25,7 +26,9 @@ function mark() {
     start += len + GAP
     return el
   }).join('')
-  return `${arcs}<circle cx="512" cy="512" r="95" fill="#fff"/>`
+  const letter = `<path d="M448 598V426L576 598V426" fill="none" stroke="#fff" stroke-width="58"
+    stroke-linecap="round" stroke-linejoin="round"/>`
+  return `${arcs}${letter}`
 }
 
 const tile = `<rect width="1024" height="1024" rx="230" fill="url(#g)"/>${mark()}`
@@ -38,7 +41,7 @@ const files = {
   'icon-only.png': svg(1024, `<rect width="1024" height="1024" fill="url(#g)"/>${mark()}`),
   'icon-background.png': svg(1024, `<rect width="1024" height="1024" fill="url(#g)"/>`),
   'icon-foreground.png': svg(1024, mark()),
-  'splash.png': splash('#F3F2FA'),
+  'splash.png': splash('#F6F5FB'),
   'splash-dark.png': splash('#12121C'),
 }
 

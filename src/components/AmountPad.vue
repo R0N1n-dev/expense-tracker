@@ -18,7 +18,9 @@ function back() {
 </script>
 
 <template>
-  <div class="big" :class="{ zero: !amount }"><small>UGX</small>{{ shown }}</div>
+  <div class="big" :class="{ zero: !amount }" role="status" aria-live="polite">
+    <small>UGX</small>{{ shown }}
+  </div>
   <slot />
   <div class="keys">
     <button v-for="k in KEYS" :key="k" @click="press(k)">{{ k }}</button>

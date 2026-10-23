@@ -1,17 +1,24 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import AppIcon from './AppIcon.vue'
 import BottomSheet from './BottomSheet.vue'
 import AmountPad from './AmountPad.vue'
 import { fmt } from '../lib/format'
 
-defineProps({
+const props = defineProps({
   open: { type: Boolean, required: true },
   current: { type: Number, required: true },
 })
 const emit = defineEmits(['close', 'save'])
 
 const amount = ref('')
+
+watch(
+  () => props.open,
+  (open) => {
+    if (open) amount.value = ''
+  },
+)
 
 function save() {
   if (!amount.value) return

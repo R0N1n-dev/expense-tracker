@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "icons": "node scripts/make-icons.mjs",
     "assets": "capacitor-assets generate --android",
-    "android": "vite build && cap sync android && cap open android"
+    "android": "vite build && cap sync android && cap open android",
+    "test": "vitest run"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.3",
@@ -23,7 +24,10 @@
     "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^8.5.3",
     "@vitejs/plugin-vue": "^6.0.8",
+    "@vue/test-utils": "^2.5.1",
+    "jsdom": "^30.1.3",
     "sharp": "^0.35.5",
-    "vite": "^8.3.0"
+    "vite": "^8.3.0",
+    "vitest": "^5.0.5"
   }
 }

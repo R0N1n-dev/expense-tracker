@@ -65,6 +65,7 @@ public class ExpenseWidget extends AppWidgetProvider {
             for (int i = 0; i < list.length(); i++) {
                 JSONObject e = list.getJSONObject(i);
                 when.setTimeInMillis(e.getLong("t"));
+                if ("income".equals(e.optString("type", "expense"))) continue;
                 if (when.get(Calendar.YEAR) == now.get(Calendar.YEAR)
                         && when.get(Calendar.MONTH) == now.get(Calendar.MONTH)) {
                     spent += e.getDouble("amt");

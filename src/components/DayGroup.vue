@@ -6,7 +6,7 @@ import { fmt } from '../lib/format'
 defineProps({
   group: { type: Object, required: true },
   open: { type: Boolean, required: true },
-  newId: { type: Number, required: true },
+  newId: { type: [Number, String], required: true },
 })
 defineEmits(['toggle', 'edit'])
 </script>
@@ -15,29 +15,40 @@ defineEmits(['toggle', 'edit'])
   <button class="day" :aria-expanded="open" @click="$emit('toggle')">
     <span class="lbl">{{ group.label }}</span>
     <span class="n">{{ group.items.length }}</span>
-    <span class="tot">UGX {{ fmt(group.total) }}</span>
+    <span v-if="group.income" class="inc">+{{ fmt(group.income) }}</span>
+    <span class="tot">{{ group.total ? `UGX ${fmt(group.total)}` : '—' }}</span>
     <AppIcon name="chev" class="chev" />
   </button>
   <div class="acc" :class="{ on: open }" :inert="!open || undefined">
     <div class="acc-in">
-      <button v-for="e in group.items" :key="e.id" class="row" :class="{ new: e.id === newId }" @click="$emit('edit', e)">
+      <button
+        v-for="e in group.items"
+        :key="e.id"
+        class="row"
+        :class="{ new: e.id === newId, income: e.type === 'income' }"
+        @click="$emit('edit', e)"
+      >
         <div class="badge" :style="{ '--c': categoryById(e.cat).color }">
           <AppIcon :name="categoryById(e.cat).icon" />
         </div>
         <div class="t">
           <b>{{ e.note || categoryById(e.cat).name }}</b>
-          <span>{{ categoryById(e.cat).name }}</span>
+          <span>
+            {{ e.type === 'income' ? 'Income' : categoryById(e.cat).name }}
+            <template v-if="e.recurringId">· auto</template>
+          </span>
         </div>
-        <div class="a">{{ fmt(e.amt) }}</div>
+        <div class="a">{{ e.type === 'income' ? '+' : '' }}{{ fmt(e.amt) }}</div>
       </button>
     </div>
   </div>
 </template>
 
 <style scoped>
-.day { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 48px; padding: 0 4px; margin-top: 6px; font-size: 15px; font-weight: 500; text-align: left; }
+.day { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 48px; padding: 0 4px; margin-top: 6px; font-size: 15px; font-weight: 500; text-align: left; }
 .day .lbl { flex: 1; }
 .day .n { font-size: 12px; min-width: 22px; padding: 2px 7px; border-radius: 10px; background: var(--empty); color: var(--mute); text-align: center; }
+.day .inc { font-size: 12px; color: var(--ok); font-weight: 600; }
 .day .tot { color: var(--mute); font-weight: 400; }
 .day .chev { color: var(--mute); transition: transform 0.25s; }
 .day[aria-expanded='true'] .chev { transform: rotate(180deg); }
@@ -58,4 +69,5 @@ defineEmits(['toggle', 'edit'])
 .t b { display: block; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .t span { font-size: 13px; color: var(--mute); }
 .a { font-weight: 700; }
+.row.income .a { color: var(--ok); }
 </style>
