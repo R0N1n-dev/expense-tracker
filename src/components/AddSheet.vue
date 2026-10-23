@@ -79,8 +79,8 @@ function del() {
     @close="emit('close')"
   >
     <div class="seg type" role="group" aria-label="Entry type">
-      <button :class="{ on: type === 'expense' }" @click="setType('expense')">Expense</button>
-      <button :class="{ on: type === 'income' }" @click="setType('income')">Income</button>
+      <button :class="{ on: type === 'expense' }" :aria-pressed="type === 'expense'" @click="setType('expense')">Expense</button>
+      <button :class="{ on: type === 'income' }" :aria-pressed="type === 'income'" @click="setType('income')">Income</button>
     </div>
 
     <AmountPad v-model="amount">
@@ -91,6 +91,7 @@ function del() {
           class="chip"
           :class="{ on: pick === c.id }"
           :style="{ '--c': c.color }"
+          :aria-pressed="pick === c.id"
           @click="pick = c.id"
         >
           <AppIcon :name="c.icon" />{{ c.name }}

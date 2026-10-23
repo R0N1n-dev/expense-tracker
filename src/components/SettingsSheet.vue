@@ -81,9 +81,9 @@ function reset() {
   <BottomSheet :open="open" title="Appearance & data" @close="emit('close')">
     <div class="sheet-label">Appearance</div>
     <div class="seg" role="group" aria-label="Appearance mode">
-      <button :class="{ on: mode === 'system' }" @click="setMode('system')">System</button>
-      <button :class="{ on: mode === 'light' }" @click="setMode('light')">Light</button>
-      <button :class="{ on: mode === 'dark' }" @click="setMode('dark')">Dark</button>
+      <button :class="{ on: mode === 'system' }" :aria-pressed="mode === 'system'" @click="setMode('system')">System</button>
+      <button :class="{ on: mode === 'light' }" :aria-pressed="mode === 'light'" @click="setMode('light')">Light</button>
+      <button :class="{ on: mode === 'dark' }" :aria-pressed="mode === 'dark'" @click="setMode('dark')">Dark</button>
     </div>
     <p class="hint">
       System follows your phone. The status bar icons are switched natively to stay readable in

@@ -30,24 +30,24 @@ function setType(type) {
 
     <div class="sheet-label">Type</div>
     <div class="seg" role="group" aria-label="Entry type">
-      <button :class="{ on: filters.type === 'all' }" @click="setType('all')">All</button>
-      <button :class="{ on: filters.type === 'expense' }" @click="setType('expense')">Expenses</button>
-      <button :class="{ on: filters.type === 'income' }" @click="setType('income')">Income</button>
+      <button :class="{ on: filters.type === 'all' }" :aria-pressed="filters.type === 'all'" @click="setType('all')">All</button>
+      <button :class="{ on: filters.type === 'expense' }" :aria-pressed="filters.type === 'expense'" @click="setType('expense')">Expenses</button>
+      <button :class="{ on: filters.type === 'income' }" :aria-pressed="filters.type === 'income'" @click="setType('income')">Income</button>
     </div>
 
     <div class="sheet-label">Period</div>
     <div class="seg" role="group" aria-label="Period">
-      <button :class="{ on: filters.scope === 'month' }" @click="setFilter({ scope: 'month' })">
+      <button :class="{ on: filters.scope === 'month' }" :aria-pressed="filters.scope === 'month'" @click="setFilter({ scope: 'month' })">
         Selected month
       </button>
-      <button :class="{ on: filters.scope === 'all' }" @click="setFilter({ scope: 'all' })">
+      <button :class="{ on: filters.scope === 'all' }" :aria-pressed="filters.scope === 'all'" @click="setFilter({ scope: 'all' })">
         All time
       </button>
     </div>
 
     <div class="sheet-label">Category</div>
     <div class="cats">
-      <button class="cat" :class="{ on: filters.cat === 'all' }" @click="setFilter({ cat: 'all' })">
+      <button class="cat" :class="{ on: filters.cat === 'all' }" :aria-pressed="filters.cat === 'all'" @click="setFilter({ cat: 'all' })">
         All
       </button>
       <button
@@ -56,6 +56,7 @@ function setType(type) {
         class="cat"
         :class="{ on: filters.cat === c.id }"
         :style="{ '--c': c.color }"
+        :aria-pressed="filters.cat === c.id"
         @click="setFilter({ cat: c.id })"
       >
         <i></i>{{ c.name }}<small v-if="c.type === 'income'">in</small>
