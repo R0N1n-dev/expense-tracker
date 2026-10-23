@@ -54,12 +54,18 @@ function apply() {
 
 // Call once before mounting the app.
 export async function loadTheme() {
-  const [savedTheme, savedMode] = await Promise.all([
-    getJSON(THEME_KEY, DEFAULT_THEME),
-    getJSON(MODE_KEY, DEFAULT_MODE),
+  const [savedTheme, savedMode, legacyMode] = await Promise.all([
+    getJSON(THEME_KEY, null),
+    getJSON(MODE_KEY, null),
+    getJSON('theme', null),
   ])
   if (THEMES.some((t) => t.id === savedTheme)) themeId.value = savedTheme
-  if (['system', 'light', 'dark'].includes(savedMode)) mode.value = savedMode
+  if (['system', 'light', 'dark'].includes(savedMode)) {
+    mode.value = savedMode
+  } else if (legacyMode === 'dark' || legacyMode === 'light') {
+    // Migrate the single dark/light switch used before themes existed.
+    mode.value = legacyMode
+  }
   apply()
 
   media.addEventListener('change', (event) => {
