@@ -264,6 +264,12 @@ h1 { font-size: 19px; font-weight: 800; margin: 0; letter-spacing: -0.02em; line
 .actions { display: flex; align-items: center; gap: 0; }
 .actions .icon-btn { width: 38px; height: 38px; color: var(--mute); }
 .actions .icon-btn svg { width: 19px; height: 19px; }
+@media (max-width: 345px) {
+  .tagline { display: none; }
+  .brand { gap: 7px; }
+  .actions .icon-btn { width: 34px; height: 34px; }
+  .actions .icon-btn svg { width: 18px; height: 18px; }
+}
 .month-card { margin-top: 14px; padding: 2px 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
 .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 30px 0 10px; }
 .section-head h2 { font-size: 16px; font-weight: 700; margin: 0; }

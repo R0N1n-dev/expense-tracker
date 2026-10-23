@@ -149,13 +149,13 @@ function pickMonth(key) {
 .label { display: block; font-size: 11px; color: var(--mute); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
 .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .summary > div { display: grid; gap: 2px; min-width: 0; }
-.summary b { font-size: 17px; }
+.summary b { font-size: clamp(13px, 4.2vw, 17px); }
 .in { color: var(--ok); }
 .neg { color: var(--over); }
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 .tile { background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 11px 12px; display: grid; gap: 2px; }
 .tile span { font-size: 11px; color: var(--mute); }
-.tile b { font-size: 16px; }
+.tile b { font-size: clamp(14px, 4.2vw, 16px); }
 .tile small { font-size: 11px; color: var(--mute); }
 .delta { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; border-left: 3px solid var(--over); }
 .delta.good { border-left-color: var(--ok); }

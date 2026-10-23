@@ -97,7 +97,7 @@ const {
 <style scoped>
 .hero { margin-top: 22px; }
 .hero-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
-.amt { font-size: 48px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin: 6px 0 0; }
+.amt { font-size: clamp(36px, 11.5vw, 48px); font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin: 6px 0 0; }
 .amt small { font-size: 17px; font-weight: 500; color: var(--mute); letter-spacing: 0; margin-right: 6px; }
 .budget-chip { display: grid; gap: 1px; justify-items: end; padding: 8px 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); font-size: 11px; color: var(--mute); }
 .budget-chip b { font-size: 12px; color: var(--ink); }
